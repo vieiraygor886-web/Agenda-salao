@@ -581,19 +581,19 @@ function abrirConfirmacaoExclusao(ag) {
   idParaExcluir = ag.id;
   el.confirmarTexto.textContent = `Excluir o agendamento de ${ag.cliente}, às ${ag.horario}${ag.data ? " no dia "+formatarDataCurta(deISO(ag.data)) : ""}? Esta ação não pode ser desfeita.`;
   el.modalForm.hidden = true;
-  el.modalConfirmar.hidden = false;
+  el.modalConfirmar.showModal();
 }
 
 el.btnCancelarExcluir.addEventListener("click", function() {
   idParaExcluir = null;
-  el.modalConfirmar.hidden = true;
+  el.modalConfirmar.close();
 });
 
 el.btnConfirmarExcluir.addEventListener("click", async function() {
   if (!idParaExcluir) return;
   const id = idParaExcluir;
   idParaExcluir = null;
-  el.modalConfirmar.hidden = true;
+  el.modalConfirmar.close();
   try {
     await deleteDoc(doc(db, NOME_COLECAO, id));
     mostrarToast("Agendamento excluído");
@@ -620,9 +620,7 @@ el.modalForm.addEventListener("click", function(e) {
   if (e.target === el.modalForm) el.modalForm.hidden = true;
 });
 
-el.modalConfirmar.addEventListener("click", function(e) {
-  if (e.target === el.modalConfirmar) el.modalConfirmar.hidden = true;
-});
+
 
 // =========================================================================
 // TOAST
