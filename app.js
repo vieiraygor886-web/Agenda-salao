@@ -580,7 +580,8 @@ el.btnExcluirDoForm.addEventListener("click", () => {
 function abrirConfirmacaoExclusao(ag) {
   idParaExcluir = ag.id;
   el.confirmarTexto.textContent = `Excluir o agendamento de ${ag.cliente}, às ${ag.horario}${ag.data ? " no dia "+formatarDataCurta(deISO(ag.data)) : ""}? Esta ação não pode ser desfeita.`;
-  abrirOverlay(el.modalConfirmar);
+  el.modalForm.hidden = true;
+  el.modalConfirmar.hidden = false;
 }
 
 el.btnCancelarExcluir.addEventListener("click", () => { idParaExcluir = null; fecharOverlay(el.modalConfirmar); });
@@ -602,8 +603,13 @@ el.btnConfirmarExcluir.addEventListener("click", async () => {
 // =========================================================================
 // OVERLAYS
 // =========================================================================
-function abrirOverlay(el)  { el.hidden = false; }
-function fecharOverlay(el) { el.hidden = true; }
+function abrirOverlay(elemento)  { 
+  // Fecha todos antes de abrir um novo
+  el.modalForm.hidden = true;
+  el.modalConfirmar.hidden = true;
+  elemento.hidden = false; 
+}
+function fecharOverlay(elemento) { elemento.hidden = true; }
 
 [el.modalForm, el.modalConfirmar].forEach(ov =>
   ov.addEventListener("click", e => { if(e.target===ov) fecharOverlay(ov); })
