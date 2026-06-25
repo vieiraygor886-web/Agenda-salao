@@ -508,6 +508,13 @@ html, body {
   border-radius: var(--raio);
   max-width: 340px;
   margin: auto;
+  position: relative;
+  z-index: 101;
+}
+
+#modal-confirmar {
+  align-items: center;
+  justify-content: center;
 }
 
 .modal-cabecalho {

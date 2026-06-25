@@ -144,12 +144,12 @@
 
   <!-- ===== MODAL: CONFIRMAR EXCLUSÃO ===== -->
   <div id="modal-confirmar" class="overlay" hidden>
-    <div class="modal modal-pequeno">
+    <div class="modal modal-pequeno" onclick="event.stopPropagation()">
       <h3>Excluir agendamento?</h3>
       <p id="confirmar-texto"></p>
       <div class="form-acoes">
-        <button id="btn-cancelar-excluir" class="btn-secundario">Cancelar</button>
-        <button id="btn-confirmar-excluir" class="btn-perigo">Excluir</button>
+        <button id="btn-cancelar-excluir" class="btn-secundario" type="button">Cancelar</button>
+        <button id="btn-confirmar-excluir" class="btn-perigo" type="button">Excluir</button>
       </div>
     </div>
   </div>
