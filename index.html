@@ -1,170 +1,162 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
-<title>Agenda do Salão</title>
-
-<!-- PWA / iPhone -->
-<meta name="theme-color" content="#E7A8A8" />
-<meta name="mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="apple-mobile-web-app-title" content="Agenda Salão" />
-<link rel="manifest" href="manifest.json" />
-<link rel="apple-touch-icon" href="icon-192.png" />
-<link rel="icon" href="icon-192.png" />
-
-<!-- Fontes -->
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet" />
-
-<link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f5ede4" />
+  <title>Agenda do Salão</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-<!-- ===================== TOAST (avisos rápidos) ===================== -->
-<div id="toast" class="toast" role="status" aria-live="polite"></div>
-
-<!-- ===================== TELA INICIAL ===================== -->
-<main id="view-home" class="view view-home">
-  <div class="home-content">
-    <div class="home-emblem">
-      <span class="home-emblem-letter">S</span>
-    </div>
-    <h1 class="home-title">Agenda do Salão</h1>
-    <p class="home-subtitle">Escolha quem está agendando</p>
-
-    <div class="home-buttons">
-      <button class="btn-pessoa btn-pessoa--felipe" data-prof="felipe">
-        <span class="btn-pessoa-icone">✂️</span>
-        <span class="btn-pessoa-nome">Felipe</span>
+  <!-- ===== TELA INICIAL ===== -->
+  <div id="view-home">
+    <header class="home-header">
+      <div class="home-logo">✂️</div>
+      <h1>Agenda do Salão</h1>
+      <p>Escolha o profissional</p>
+    </header>
+    <div class="home-botoes">
+      <button class="btn-pessoa" data-prof="felipe">
+        <span class="pessoa-icone">✂️</span>
+        <span class="pessoa-nome">Filipe</span>
       </button>
-      <button class="btn-pessoa btn-pessoa--roseli" data-prof="roseli">
-        <span class="btn-pessoa-icone">💇‍♀️</span>
-        <span class="btn-pessoa-nome">Roseli</span>
+      <button class="btn-pessoa" data-prof="roseli">
+        <span class="pessoa-icone">💨</span>
+        <span class="pessoa-nome">Roseli</span>
       </button>
     </div>
   </div>
-</main>
 
-<!-- ===================== AGENDA ===================== -->
-<main id="view-agenda" class="view view-agenda" hidden>
+  <!-- ===== TELA DA AGENDA ===== -->
+  <div id="view-agenda" hidden>
 
-  <header class="agenda-header">
-    <button id="btn-voltar" class="btn-icone" aria-label="Voltar para a tela inicial">←</button>
-    <div class="agenda-titulo">
-      <span id="agenda-nome" class="agenda-nome">Felipe</span>
-      <span class="agenda-legenda">agenda</span>
+    <header class="agenda-header">
+      <button id="btn-voltar" aria-label="Voltar">←</button>
+      <h2 id="agenda-nome"></h2>
+      <button id="btn-hoje">Hoje</button>
+    </header>
+
+    <div class="barra-busca">
+      <input id="campo-busca" type="search" placeholder="Buscar cliente…" autocomplete="off" />
+      <button id="btn-limpar-busca" hidden aria-label="Limpar busca">✕</button>
     </div>
-    <button id="btn-hoje" class="btn-hoje">Hoje</button>
-  </header>
 
-  <div class="agenda-busca">
-    <span class="busca-icone" aria-hidden="true">🔎</span>
-    <input id="campo-busca" type="text" placeholder="Buscar cliente pelo nome…" autocomplete="off" />
-    <button id="btn-limpar-busca" class="btn-limpar-busca" hidden aria-label="Limpar busca">✕</button>
+    <!-- Bloco semana/mês -->
+    <div id="bloco-semana">
+      <div class="semana-nav">
+        <button id="btn-semana-anterior" aria-label="Anterior">‹</button>
+        <span id="semana-rotulo"></span>
+        <button id="btn-semana-seguinte" aria-label="Próxima">›</button>
+      </div>
+      <div id="faixa-dias"></div>
+      <div class="vis-toggle">
+        <button id="btn-vis-semana" class="vis-btn ativo">Semana</button>
+        <button id="btn-vis-mes" class="vis-btn">Mês</button>
+      </div>
+      <!-- Grade mensal (oculta por padrão) -->
+      <div id="grade-mes" hidden></div>
+    </div>
+
+    <div class="lista-secao">
+      <h3 id="lista-titulo"></h3>
+      <div id="lista-agendamentos"></div>
+      <div id="estado-vazio" hidden>
+        <p></p>
+      </div>
+    </div>
+
+    <button id="btn-novo" aria-label="Novo agendamento">＋</button>
   </div>
 
-  <!-- Navegação de semana -->
-  <section id="bloco-semana" class="bloco-semana">
-    <div class="semana-nav">
-      <button id="btn-semana-anterior" class="btn-icone" aria-label="Semana anterior">‹</button>
-      <span id="semana-rotulo" class="semana-rotulo"></span>
-      <button id="btn-semana-seguinte" class="btn-icone" aria-label="Semana seguinte">›</button>
-    </div>
-    <div id="faixa-dias" class="faixa-dias"></div>
-  </section>
+  <!-- ===== MODAL: FORMULÁRIO ===== -->
+  <div id="modal-form" class="overlay" hidden>
+    <div class="modal">
+      <div class="modal-cabecalho">
+        <h3 id="form-titulo">Novo agendamento</h3>
+        <button id="btn-fechar-form" aria-label="Fechar">✕</button>
+      </div>
+      <form id="form-agendamento" novalidate>
+        <input type="hidden" id="campo-id" />
 
-  <!-- Lista do dia / resultados da busca -->
-  <section class="bloco-lista">
-    <h2 id="lista-titulo" class="lista-titulo">—</h2>
-    <div id="lista-agendamentos" class="lista-agendamentos"></div>
-    <div id="estado-vazio" class="estado-vazio" hidden>
-      <span class="estado-vazio-icone">🌸</span>
-      <p>Nenhum agendamento por aqui ainda.</p>
-      <p class="estado-vazio-dica">Toque no botão + para agendar um horário.</p>
-    </div>
-  </section>
-
-  <button id="btn-novo" class="btn-flutuante" aria-label="Novo agendamento">+</button>
-</main>
-
-<!-- ===================== MODAL: NOVO / EDITAR ===================== -->
-<div id="modal-form" class="overlay" hidden>
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="form-titulo">
-    <div class="modal-cabecalho">
-      <h3 id="form-titulo">Novo agendamento</h3>
-      <button class="btn-icone" id="btn-fechar-form" aria-label="Fechar">✕</button>
-    </div>
-
-    <form id="form-agendamento">
-      <input type="hidden" id="campo-id" />
-
-      <div class="campo-linha">
-        <div class="campo">
-          <label for="campo-data">Data *</label>
-          <input type="date" id="campo-data" required />
+        <div class="form-linha">
+          <div class="form-grupo">
+            <label for="campo-data">Data *</label>
+            <input id="campo-data" type="date" required />
+          </div>
+          <div class="form-grupo">
+            <label for="campo-horario">Horário *</label>
+            <input id="campo-horario" type="time" required />
+          </div>
         </div>
-        <div class="campo">
-          <label for="campo-horario">Horário *</label>
-          <input type="time" id="campo-horario" required />
+
+        <div class="form-grupo">
+          <label for="campo-cliente">Nome da cliente *</label>
+          <input id="campo-cliente" type="text" placeholder="Ex: Maria Silva" required />
         </div>
-      </div>
 
-      <div class="campo">
-        <label for="campo-cliente">Nome da cliente *</label>
-        <input type="text" id="campo-cliente" placeholder="Ex: Maria Souza" required />
-      </div>
+        <div class="form-grupo">
+          <label for="campo-telefone">Telefone (WhatsApp)</label>
+          <input id="campo-telefone" type="tel" placeholder="Ex: (11) 99999-9999" />
+        </div>
 
-      <div class="campo">
-        <label for="campo-telefone">Telefone <span class="opcional">(opcional)</span></label>
-        <input type="tel" id="campo-telefone" placeholder="Ex: (11) 99999-9999" />
-      </div>
+        <div class="form-grupo">
+          <label for="campo-servico">Serviço (opcional)</label>
+          <input id="campo-servico" type="text" placeholder="Ex: Corte, escova, coloração…" />
+        </div>
 
-      <div class="campo">
-        <label for="campo-servico">Serviço <span class="opcional">(opcional)</span></label>
-        <input type="text" id="campo-servico" placeholder="Ex: Corte, escova, coloração…" />
-      </div>
+        <!-- PACOTE -->
+        <div class="form-grupo">
+          <label class="label-check">
+            <input id="campo-tem-pacote" type="checkbox" />
+            Cliente tem pacote
+          </label>
+        </div>
+        <div id="secao-pacote" hidden>
+          <div class="form-grupo">
+            <label for="campo-pacote-desc">Descrição do pacote</label>
+            <input id="campo-pacote-desc" type="text" placeholder="Ex: 4 escovas/mês" />
+          </div>
+          <div class="form-grupo">
+            <label class="label-check">
+              <input id="campo-visita-pacote" type="checkbox" />
+              Esta visita é do pacote
+            </label>
+          </div>
+        </div>
 
-      <div class="campo">
-        <label for="campo-observacao">Observação <span class="opcional">(opcional)</span></label>
-        <textarea id="campo-observacao" rows="2" placeholder="Ex: alergia, preferências…"></textarea>
-      </div>
+        <div class="form-grupo">
+          <label for="campo-observacao">Observação (opcional)</label>
+          <textarea id="campo-observacao" rows="2" placeholder="Ex: alergia, preferências…"></textarea>
+        </div>
 
-      <div class="modal-acoes">
-        <button type="button" id="btn-excluir-do-form" class="btn-secundario btn-perigo" hidden>Excluir</button>
-        <div class="modal-acoes-direita">
+        <div class="form-acoes">
+          <button type="button" id="btn-excluir-do-form" class="btn-perigo" hidden>Excluir</button>
           <button type="button" id="btn-cancelar-form" class="btn-secundario">Cancelar</button>
           <button type="submit" class="btn-primario">Salvar</button>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
-</div>
 
-<!-- ===================== MODAL: CONFIRMAR EXCLUSÃO ===================== -->
-<div id="modal-confirmar" class="overlay" hidden>
-  <div class="modal modal-pequeno" role="alertdialog" aria-modal="true" aria-labelledby="confirmar-titulo">
-    <h3 id="confirmar-titulo">Excluir agendamento?</h3>
-    <p id="confirmar-texto" class="confirmar-texto"></p>
-    <div class="modal-acoes">
-      <div class="modal-acoes-direita" style="width:100%; justify-content: flex-end;">
-        <button type="button" id="btn-cancelar-excluir" class="btn-secundario">Cancelar</button>
-        <button type="button" id="btn-confirmar-excluir" class="btn-primario btn-perigo-solido">Excluir</button>
+  <!-- ===== MODAL: CONFIRMAR EXCLUSÃO ===== -->
+  <div id="modal-confirmar" class="overlay" hidden>
+    <div class="modal modal-pequeno">
+      <h3>Excluir agendamento?</h3>
+      <p id="confirmar-texto"></p>
+      <div class="form-acoes">
+        <button id="btn-cancelar-excluir" class="btn-secundario">Cancelar</button>
+        <button id="btn-confirmar-excluir" class="btn-perigo">Excluir</button>
       </div>
     </div>
   </div>
-</div>
 
-<script type="module" src="app.js"></script>
-<script>
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker.register("service-worker.js").catch(() => {});
-    });
-  }
-</script>
+  <!-- ===== TOAST ===== -->
+  <div id="toast" aria-live="polite"></div>
+
+  <script type="module" src="app.js"></script>
 </body>
 </html>
