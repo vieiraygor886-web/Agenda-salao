@@ -77,6 +77,10 @@ button {
   background: linear-gradient(180deg, #FBE9E7 0%, var(--cor-fundo) 45%);
 }
 
+.view-home[hidden] {
+  display: none;
+}
+
 .home-content {
   text-align: center;
   width: 100%;
@@ -537,6 +541,10 @@ button {
   justify-content: center;
   z-index: 200;
   padding: 0;
+}
+
+.overlay[hidden] {
+  display: none;
 }
 
 .modal {
