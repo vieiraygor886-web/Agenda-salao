@@ -528,7 +528,7 @@ function abrirFormEdicao(ag) {
   abrirOverlay(el.modalForm);
 }
 
-function fecharForm() { fecharOverlay(el.modalForm); }
+function fecharForm() { el.modalForm.hidden = true; }
 
 el.formAgendamento.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -584,36 +584,45 @@ function abrirConfirmacaoExclusao(ag) {
   el.modalConfirmar.hidden = false;
 }
 
-el.btnCancelarExcluir.addEventListener("click", () => { idParaExcluir = null; fecharOverlay(el.modalConfirmar); });
+el.btnCancelarExcluir.addEventListener("click", function() {
+  idParaExcluir = null;
+  el.modalConfirmar.hidden = true;
+});
 
-el.btnConfirmarExcluir.addEventListener("click", async () => {
+el.btnConfirmarExcluir.addEventListener("click", async function() {
   if (!idParaExcluir) return;
-  const id = idParaExcluir; idParaExcluir = null;
+  const id = idParaExcluir;
+  idParaExcluir = null;
+  el.modalConfirmar.hidden = true;
   try {
     await deleteDoc(doc(db, NOME_COLECAO, id));
     mostrarToast("Agendamento excluído");
   } catch(err) {
     console.error(err);
     mostrarToast("Não foi possível excluir. Verifique a internet.");
-  } finally {
-    fecharOverlay(el.modalConfirmar);
   }
 });
 
 // =========================================================================
 // OVERLAYS
 // =========================================================================
-function abrirOverlay(elemento)  { 
-  // Fecha todos antes de abrir um novo
+function abrirOverlay(elemento) {
   el.modalForm.hidden = true;
   el.modalConfirmar.hidden = true;
-  elemento.hidden = false; 
+  elemento.hidden = false;
 }
-function fecharOverlay(elemento) { elemento.hidden = true; }
 
-[el.modalForm, el.modalConfirmar].forEach(ov =>
-  ov.addEventListener("click", e => { if(e.target===ov) fecharOverlay(ov); })
-);
+function fecharOverlay(elemento) {
+  elemento.hidden = true;
+}
+
+el.modalForm.addEventListener("click", function(e) {
+  if (e.target === el.modalForm) el.modalForm.hidden = true;
+});
+
+el.modalConfirmar.addEventListener("click", function(e) {
+  if (e.target === el.modalConfirmar) el.modalConfirmar.hidden = true;
+});
 
 // =========================================================================
 // TOAST
